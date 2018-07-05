@@ -144,13 +144,13 @@ class QQGroups(object):
             buff = BytesIO()
             zip_archive = zipfile.ZipFile(buff, mode='w')
             temp = []
-            for i in xrange(len(kws)):
+            for i in range(len(kws)):
                 temp.append(BytesIO())
             for i, kw in enumerate(kws[:10]):
                 groups = [(u'群名称', u'群号', u'群人数', u'群上限',
                            u'群主', u'地域', u'分类', u'标签', u'群简介')]
                 gListRaw = []
-                for page in xrange(0, pn):
+                for page in range(0, pn):
                     # sort type: 0 deafult, 1 menber, 2 active
                     url = 'http://qun.qq.com/cgi-bin/group_search/pc_group_search'
                     data = {
@@ -172,7 +172,7 @@ class QQGroups(object):
                     }
                     resp = self.sess.post(url, data=data, timeout=1000)
                     if resp.status_code != 200:
-                        print '%s\n%s' % (resp.status_code, resp.text)
+                        print('%s\n%s' % (resp.status_code, resp.text))
                     result = json.loads(resp.content)
                     gList = result['group_list']
                     gListRaw.extend(gList)
@@ -208,7 +208,7 @@ class QQGroups(object):
                     writer.writerows(groups)
                 elif ft == 'json':
                     json.dump(gListRaw, temp[i], indent=4, sort_keys=True)
-            for i in xrange(len(kws)):
+            for i in range(len(kws)):
                 zip_archive.writestr(kws[i].decode(
                     'utf-8') + '.' + ft, temp[i].getvalue())
             zip_archive.close()
@@ -218,20 +218,20 @@ class QQGroups(object):
             response.add_header('Cache-Control', 'no-cache; must-revalidate')
             response.add_header('Expires', '-1')
             return resultId
-        except Exception, e:
-            print e
+        except Exception as e:
+            print(e)
             abort(500,)
 
     def genqrtoken(self, qrsig):
         e = 0
-        for i in xrange(0, len(qrsig)):
+        for i in range(0, len(qrsig)):
             e += (e << 5) + ord(qrsig[i])
         qrtoken = (e & 2147483647)
         return str(qrtoken)
 
     def genbkn(self, skey):
         b = 5381
-        for i in xrange(0, len(skey)):
+        for i in range(0, len(skey)):
             b += (b << 5) + ord(skey[i])
         bkn = (b & 2147483647)
         return str(bkn)
